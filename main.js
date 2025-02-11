@@ -4,25 +4,23 @@ const inputs = document.getElementById("inputs");
 const plotButton = document.getElementById("plotButton");
 const plotContainer = document.getElementById("plotContainer");
 
+// Make sure plots are appended to the correct container
 document.pyodideMplTarget = plotContainer;
 
+// Helpers to parse input
 function getValue(id) {
     return document.getElementById(id).value;
 }
-
 function getBool(id) {
     return document.getElementById(id).checked;
 }
-
 function parseFloatList(text) {
     return text.split(",").map(s=>parseFloat(s));
 }
 
-window.addEventListener("load", () => {
-    plot();
-});
+init();
 
-async function plot() {
+async function init() {
     // Setup pyodide
     // eslint-disable-next-line no-undef
     let pyodide = await loadPyodide();
@@ -33,7 +31,7 @@ async function plot() {
     await micropip.install("numpy");
     await micropip.install("matplotlib");
 
-    // Downloading a single file
+    // Load the rsg python code
     await pyodide.runPythonAsync(`
         from pyodide.http import pyfetch
         response = await pyfetch("./rsg.py")
@@ -42,10 +40,11 @@ async function plot() {
     `);
     const rsg = pyodide.pyimport("rsg");
 
-    // Remove loading indicator and show inputs
+    // Hide loading indicator and show inputs
     loadingIndicator.hidden = true;
     inputs.hidden = false;
 
+    // Create the plot on button press
     plotButton.onclick = () => {
         rsg.RSGplot(
             parseFloatList(getValue("filter_down")),
@@ -62,6 +61,8 @@ async function plot() {
             parseFloat(getValue("nr_of_CO_lines")),
             parseFloat(getValue("dzUncertainty"))
         );
+
+        // Show plot container
         plotContainer.hidden = false;
     };
 }
