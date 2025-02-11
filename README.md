@@ -21,5 +21,5 @@ python -m http.server 8000
 Then, you can go to [localhost:8000](HTTP:/localhost:8000) (or whatever port you used above) to view the app.
 
 
-### Pyodide
+## Pyodide
 [Pyodide](https://pyodide.org/) is a Python distribution that can run in the browser (through WebAssembly), allowing you to call Python code from JavaScript.
