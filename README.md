@@ -1,10 +1,12 @@
 
 # Redshift search graphs
-Efficient analysis of bandwidth coverage and spectral lines for finding z-specs
+Efficient analysis of bandwidth coverage and spectral lines for finding z-specs.
 
 Original code by Tom Bakx: https://github.com/tjlcbakx/redshift-search-graphs
 
 User interface by Joakim Bohlin, Chalmers Infravis.
+
+<img src="https://raw.githubusercontent.com/tjlcbakx/redshift-search-graphs/refs/heads/master/Fig_1_animated.gif" width="600px">
 
 ## Try it now
 Simply go to https://akodiat.github.io/redshift-search-graphs to try the app yourself.
