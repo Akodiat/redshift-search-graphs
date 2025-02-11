@@ -2,9 +2,9 @@
 const loadingIndicator = document.getElementById("loadingIndicator");
 const inputs = document.getElementById("inputs");
 const plotButton = document.getElementById("plotButton");
+const plotContainer = document.getElementById("plotContainer");
 
-
-document.pyodideMplTarget = document.getElementById("plotContainer");
+document.pyodideMplTarget = plotContainer;
 
 function getValue(id) {
     return document.getElementById(id).value;
@@ -62,5 +62,6 @@ async function plot() {
             parseFloat(getValue("nr_of_CO_lines")),
             parseFloat(getValue("dzUncertainty"))
         );
+        plotContainer.hidden = false;
     };
 }
