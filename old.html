@@ -9,11 +9,6 @@
     <!-- Load icons for matplotlib toolbar buttons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"/>
 
-    <!-- Vega-lite plotting -->
-    <script src="https://cdn.jsdelivr.net/npm/vega@6.0.0"></script>
-    <script src="https://cdn.jsdelivr.net/npm/vega-lite@6.1.0"></script>
-    <script src="https://cdn.jsdelivr.net/npm/vega-embed@6.29.0"></script>
-
     <!-- Order plots by most recent -->
     <style>
       #plotContainer {
@@ -33,13 +28,16 @@
         <h1>Redshift search graphs</h1>
         <p>Efficient analysis of bandwidth coverage and spectral lines for finding z-specs.</p>
 
-        <p><a href="./old.html">Click here for the old, python-based visualisation</a></p>
+        <p><a href="./index.html">Click here for the new version</a></p>
       </hgroup>
+      <span id="loadingIndicator">
+      Loading...
+      <progress/>
       </span>
     </header>
 
     <main class="container">
-      <article id="inputs">
+      <article id="inputs" hidden>
         <fieldset>
           <label>
           Filter down
@@ -134,7 +132,7 @@
         <input id="plotButton" type="submit" value="Plot" />
       </article>
 
-      <article id="plotContainer" style="width: 100%;"></article>
+      <article id="plotContainer" hidden></article>
     </main>
 
     <footer class="container">
@@ -143,6 +141,6 @@
         <a href="https://github.com/akodiat/redshift-search-graphs">User interface</a> by Dr. Joakim Bohlin, Chalmers, Infravis.
       </small>
     </footer>
-    <script type="module" src="main.js"></script>
+    <script type="module" src="old_main.js"></script>
   </body>
 </html>
