@@ -33,11 +33,15 @@ class PlotView {
 
     plot(
         filter_down, filter_up, z_phot=-99, sl_freq_obs=[-99],
-        figSizeX=6, figSizeY=4, redshift_down=0, redshift_up=7,
+        figSizeX=-1, figSizeY=300, redshift_down=0, redshift_up=7,
         single_line_colour='#FFD79F', multi_line_colour='#9DDBFF',
         LSBUSB=False, nr_of_CO_lines = 20, dzUncertainty=0.13
     ) {
         const dataSize = 400;
+
+        if (figSizeX < 0) {
+            figSizeX = "container"
+        }
 
         // Calculate x-axis values
         const redshiftArray = range(dataSize).map(
@@ -115,11 +119,9 @@ class PlotView {
         }
         const maxDist = Math.max(...intersects.map(p=>p.closestOtherDist));
 
-        const dark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
         const vlSpec = {
             $schema: "https://vega.github.io/schema/vega-lite/v6.json",
-            width: "container",
-            height: 200,
+            width: figSizeX, height: figSizeY,
             layer: [
                 {
                     data: {values: data},
@@ -144,7 +146,7 @@ class PlotView {
                             scale: {
                                 domain: relevantMolecules,
                                 range: relevantMolecules.map(
-                                    (v,i) => [i, i]
+                                    (v,i) => [i*3, i]
                                 )
                             },
                             legend: {
