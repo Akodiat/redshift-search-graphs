@@ -14,9 +14,6 @@ const plotView = new PlotView();
 function getValue(id) {
     return document.getElementById(id).value;
 }
-function getBool(id) {
-    return document.getElementById(id).checked;
-}
 function parseFloatList(text) {
     return text.split(",").map(s=>parseFloat(s));
 }
@@ -25,19 +22,14 @@ function parseFloatList(text) {
 // Create the plot on button press
 plotButton.onclick = () => {
     plotView.plot(
-        parseFloatList(getValue("filter_down")),
-        parseFloatList(getValue("filter_up")),
-        parseFloat(getValue("z_phot")),
         parseFloatList(getValue("sl_freq_obs")),
+        parseFloat(getValue("redshiftMatchDist")),
         parseFloat(getValue("figSizeX")),
         parseFloat(getValue("figSizeY")),
         parseFloat(getValue("redshift_down")),
         parseFloat(getValue("redshift_up")),
-        getValue("single_line_colour"),
-        getValue("multi_line_colour"),
-        getBool("LSBUSB"),
+        parseFloat(getValue("frequency_padding")),
         parseFloat(getValue("nr_of_CO_lines")),
-        parseFloat(getValue("dzUncertainty"))
     );
 };
 

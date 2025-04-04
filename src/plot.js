@@ -32,15 +32,15 @@ class PlotView {
     }
 
     plot(
-        filter_down, filter_up, z_phot=-99, sl_freq_obs=[-99],
+        sl_freq_obs=[-99], redshiftMatchDist=0.1,
         figSizeX=-1, figSizeY=300, redshift_down=0, redshift_up=7,
-        single_line_colour='#FFD79F', multi_line_colour='#9DDBFF',
-        LSBUSB=False, nr_of_CO_lines = 20, dzUncertainty=0.13
+        frequency_padding = 20,
+        nr_of_CO_lines = 20,
     ) {
         const dataSize = 400;
 
         if (figSizeX < 0) {
-            figSizeX = "container"
+            figSizeX = "container";
         }
 
         // Calculate x-axis values
@@ -48,10 +48,9 @@ class PlotView {
             i => redshift_down + i*(redshift_up-redshift_down)/dataSize
         );
 
-        const filter_down_min = Math.min(...filter_down);
-        const frequency_down = filter_down_min * 0.85;
-        const frequency_diff = filter_down_min * 0.15;
-        const frequency_up = Math.max(...filter_up) + frequency_diff;
+        // Calculate y-axis extent
+        const frequency_up = Math.max(...sl_freq_obs) + frequency_padding;
+        const frequency_down = Math.min(...sl_freq_obs) - frequency_padding;
 
         const data = [];
 
@@ -112,12 +111,14 @@ class PlotView {
             for (const p2 of intersects) {
                 if (p1.frequency !== p2.frequency) {
                     const dist = Math.abs(p1.redshift - p2.redshift);
-                    p1.closestOtherDist = Math.min(p1.closestOtherDist, dist)
-                    p2.closestOtherDist = Math.min(p2.closestOtherDist, dist)
+                    p1.closestOtherDist = Math.min(p1.closestOtherDist, dist);
+                    p2.closestOtherDist = Math.min(p2.closestOtherDist, dist);
                 }
             }
         }
         const maxDist = Math.max(...intersects.map(p=>p.closestOtherDist));
+
+        intersects.forEach(p => p.match = p.closestOtherDist < redshiftMatchDist);
 
         const vlSpec = {
             $schema: "https://vega.github.io/schema/vega-lite/v6.json",
@@ -186,7 +187,7 @@ class PlotView {
                 },
                 {
                     data: {values: intersects},
-                    mark: {type: "point", size: 150, color: "black", tooltip: {content: "data"}},
+                    mark: {type: "point", size: 150, tooltip: {content: "data"}},
                     encoding: {
                         x: {
                             field: "redshift",
@@ -200,6 +201,12 @@ class PlotView {
                             field: "closestOtherDist",
                             type: "quantitative",
                             scale: {domain: [maxDist, 0]}
+                        },
+                        shape: {
+                            field: "match",
+                            type: "nominal",
+                            title: `Distance < ${redshiftMatchDist}z`,
+                            legend: {orient: "bottom"}
                         }
                     }
                 }
@@ -207,7 +214,7 @@ class PlotView {
             ]
         };
         // Embed the visualization in the container
-        vegaEmbed("#"+this.elementId, vlSpec);
+        vegaEmbed("#"+this.elementId, vlSpec, {renderer: "svg"});
     }
 }
 
