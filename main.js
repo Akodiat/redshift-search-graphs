@@ -3,6 +3,8 @@ import {PlotView} from "./src/plot.js";
 // Get reference to UI elements
 const plotButton = document.getElementById("plotButton");
 const plotContainer = document.getElementById("plotContainer");
+const interSectsTable = document.getElementById("intersectsTable");
+const tableBody = document.getElementById("intersectsTableBody");
 
 // Make sure plots are appended to the correct container
 document.pyodideMplTarget = plotContainer;
@@ -21,6 +23,7 @@ function parseFloatList(text) {
 
 // Create the plot on button press
 plotButton.onclick = () => {
+    plotContainer.hidden = false;
     const redshiftMatchDist = parseFloat(getValue("redshiftMatchDist"));
     const intersects = plotView.plot(
         parseFloatList(getValue("sl_freq_obs")),
@@ -32,8 +35,9 @@ plotButton.onclick = () => {
         parseFloat(getValue("frequency_padding")),
         parseFloat(getValue("nr_of_CO_lines")),
     );
-    intersects.sort((a, b) => a.closestOtherDist - b.closestOtherDist);
 
+    // Create table of intersects
+    intersects.sort((a, b) => a.closestOtherDist - b.closestOtherDist);
     const unsorted = intersects.map((e, i)=>i);
     const groups = [];
     while (unsorted.length > 0) {
@@ -56,9 +60,9 @@ plotButton.onclick = () => {
         groups.push(group);
     }
 
-    document.getElementById("intersectsTable").hidden = false;
+    interSectsTable.hidden = false;
 
-    const tableBody = document.getElementById("intersectsTableBody");
+    // Fill table
     tableBody.innerHTML = "";
     for (const group of groups) {
         if (group.length <= 1) {
@@ -66,10 +70,6 @@ plotButton.onclick = () => {
         }
         for (let i=0; i<group.length; i++) {
             const row = document.createElement("tr");
-            //const rs = document.createElement("th");
-            //rs.scope = "row";
-            //rs.innerText = intersects[group[i]].redshift;
-            //row.appendChild(rs);
             for (const p of [
                 "type",
                 "redshift",
@@ -84,7 +84,7 @@ plotButton.onclick = () => {
             }
 
             if (i === group.length - 1) {
-                row.style = "border-bottom: 2px solid #555;"
+                row.style = "border-bottom: 2px solid #555";
             }
         }
     }

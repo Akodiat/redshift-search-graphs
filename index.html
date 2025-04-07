@@ -40,16 +40,18 @@
 
     <main class="container">
       <article id="inputs">
-        <fieldset>
-          <label>
-            Observed spectral lines
+        <label>
+          Observed spectral lines
+          <fieldset role="group">
             <input type="text" id="sl_freq_obs" aria-label="Observed spectral lines" value="93.463, 155.772">
-            <small>A comma-separated list of the observed spectral lines.</small>
+            <input class="outline" id="plotButton" type="submit" value="Plot" />
+          </fieldset>
+            <small>Input a comma-separated list of the observed spectral line frequencies [GHz], then click "Plot"</small>
           </label>
 
-          <hr/>
+        <hr/>
           <details>
-            <summary>More options</summary>
+            <summary>Settings</summary>
 
             <label>
               Frequency match distance
@@ -94,27 +96,27 @@
             </label>
 
           </details>
-        </fieldset>
-        <input id="plotButton" type="submit" value="Plot" />
       </article>
 
-      <article id="plotContainer" style="width: 100%;"></article>
+      <article id="plotContainer" style="width: 100%;" hidden></article>
 
       <article id="intersectsTable" style="width: 100%;" hidden>
         <h2>Intersection table</h2>
-        <table class="striped">
-          <thead>
-            <tr>
-              <th scope="col">Molecule</th>
-              <th scope="col">Redshift [z]</th>
-              <th scope="col">Rest frequency [GHz]</th>
-              <th scope="col">Frequency [GHz]</th>
-              <th scope="col">Distance to match [z]</th>
-            </tr>
-          </thead>
-          <tbody id="intersectsTableBody">
-          </tbody>
-        </table>
+        <div class="overflow-auto">
+          <table class="striped">
+            <thead>
+              <tr>
+                <th scope="col">Molecule</th>
+                <th scope="col">Redshift [z]</th>
+                <th scope="col">Rest frequency [GHz]</th>
+                <th scope="col">Frequency [GHz]</th>
+                <th scope="col">Distance to match [z]</th>
+              </tr>
+            </thead>
+            <tbody id="intersectsTableBody">
+            </tbody>
+          </table>
+        </div>
       </article>
     </main>
 
