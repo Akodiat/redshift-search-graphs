@@ -21,9 +21,10 @@ function parseFloatList(text) {
 
 // Create the plot on button press
 plotButton.onclick = () => {
-    plotView.plot(
+    const redshiftMatchDist = parseFloat(getValue("redshiftMatchDist"));
+    const intersects = plotView.plot(
         parseFloatList(getValue("sl_freq_obs")),
-        parseFloat(getValue("redshiftMatchDist")),
+        redshiftMatchDist,
         parseFloat(getValue("figSizeX")),
         parseFloat(getValue("figSizeY")),
         parseFloat(getValue("redshift_down")),
@@ -31,5 +32,61 @@ plotButton.onclick = () => {
         parseFloat(getValue("frequency_padding")),
         parseFloat(getValue("nr_of_CO_lines")),
     );
+    intersects.sort((a, b) => a.closestOtherDist - b.closestOtherDist);
+
+    const unsorted = intersects.map((e, i)=>i);
+    const groups = [];
+    while (unsorted.length > 0) {
+        // Move first element to new group
+        const group = [unsorted[0]];
+        unsorted.splice(0, 1);
+        for (let i=0; i<unsorted.length; i++) {
+            if (Math.abs(
+                intersects[group[0]].redshift -
+                intersects[unsorted[i]].redshift
+            ) < redshiftMatchDist
+            ) {
+                // Add to group
+                group.push(unsorted[i]);
+                // Remove from unsorted
+                unsorted.splice(i, 1);
+                i--;
+            }
+        }
+        groups.push(group);
+    }
+
+    document.getElementById("intersectsTable").hidden = false;
+
+    const tableBody = document.getElementById("intersectsTableBody");
+    tableBody.innerHTML = "";
+    for (const group of groups) {
+        if (group.length <= 1) {
+            continue;
+        }
+        for (let i=0; i<group.length; i++) {
+            const row = document.createElement("tr");
+            //const rs = document.createElement("th");
+            //rs.scope = "row";
+            //rs.innerText = intersects[group[i]].redshift;
+            //row.appendChild(rs);
+            for (const p of [
+                "type",
+                "redshift",
+                "restFreq",
+                "frequency",
+                "closestOtherDist",
+            ]) {
+                const d = document.createElement("td");
+                d.innerText = intersects[group[i]][p];
+                row.appendChild(d);
+                tableBody.appendChild(row);
+            }
+
+            if (i === group.length - 1) {
+                row.style = "border-bottom: 2px solid #555;"
+            }
+        }
+    }
 };
 

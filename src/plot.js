@@ -219,6 +219,8 @@ class PlotView {
         };
         // Embed the visualization in the container
         vegaEmbed("#"+this.elementId, vlSpec, {renderer: "svg"});
+
+        return intersects;
     }
 }
 
