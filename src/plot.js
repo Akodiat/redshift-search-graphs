@@ -77,7 +77,6 @@ class PlotView {
                         redshift: redshift,
                         index: i,
                         type: l.type,
-                        isCO: l.type !== "CO",
                         restFreq: l.restFreq,
                     }
                 ))
@@ -144,15 +143,8 @@ class PlotView {
                             field: "type",
                             type: "nominal",
                             title: "Molecule",
-                            scale: {
-                                domain: relevantMolecules,
-                                range: relevantMolecules.map(
-                                    (v,i) => [i*3, i]
-                                )
-                            },
-                            legend: {
-                                orient: "bottom", padding: 5
-                            },
+                            scale: {domain: relevantMolecules},
+                            legend: {orient: "bottom", padding: 5},
                         },
                     }
                 },
@@ -187,7 +179,7 @@ class PlotView {
                 },
                 {
                     data: {values: intersects},
-                    mark: {type: "point", size: 150, tooltip: {content: "data"}},
+                    mark: {type: "point", size: 150},
                     encoding: {
                         x: {
                             field: "redshift",
@@ -207,7 +199,14 @@ class PlotView {
                             type: "nominal",
                             title: `Distance < ${redshiftMatchDist}z`,
                             legend: {orient: "bottom"}
-                        }
+                        },
+                        tooltip: [
+                            {field: "type", type: "nominal", title: "Molecule"},
+                            {field: "redshift", type: "quantitative", title: "Redshift [z]"},
+                            {field: "restFreq", type: "quantitative", title: "Rest frequency [GHz]"},
+                            {field: "frequency", type: "quantitative", title: "Frequency [GHz]"},
+                            {field: "closestOtherDist", type: "quantitative", title: "Redshift distance to closest frequency match"},
+                        ]
                     }
                 }
 
