@@ -124,6 +124,11 @@ class PlotView {
             width: figSizeX, height: figSizeY,
             layer: [
                 {
+                    params: [{
+                        name: "grid",
+                        select: "interval",
+                        bind: "scales"
+                    }],
                     data: {values: data},
                     mark: {type: "line", tooltip: {content: "data"}, clip: true, color: "lightgrey", strokeWidth: 1},
                     encoding: {
