@@ -3,104 +3,86 @@
   <head>
     <!-- Make things look better -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css">
+
     <!-- Use light theme -->
     <html data-theme="light">
-
-    <!-- Load icons for matplotlib toolbar buttons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"/>
 
     <!-- Vega-lite plotting -->
     <script src="https://cdn.jsdelivr.net/npm/vega@6.0.0"></script>
     <script src="https://cdn.jsdelivr.net/npm/vega-lite@6.1.0"></script>
     <script src="https://cdn.jsdelivr.net/npm/vega-embed@6.29.0"></script>
 
-    <!-- Order plots by most recent -->
+    <!-- Undo changes to plot css from pico -->
     <style>
-      #plotContainer {
-        display: flex;
-        flex-direction: column-reverse;
-      }
+      .vega-embed summary {margin: 5px}
+      .vega-embed summary::after {display: none}
     </style>
+
   </html>
-  <!-- Enable python -->
-  <script src="https://cdn.jsdelivr.net/pyodide/v0.25.0/full/pyodide.js"></script>
   </head>
-
   <body>
-
     <header class="container">
       <hgroup>
         <h1>Redshift search graphs</h1>
         <p>Efficient analysis of bandwidth coverage and spectral lines for finding z-specs.</p>
-
         <p><a href="./old.html">Click here for the old, python-based visualisation</a></p>
       </hgroup>
       </span>
     </header>
-
     <main class="container">
       <article id="inputs">
         <label>
           Observed spectral lines
           <fieldset role="group">
             <input type="text" id="sl_freq_obs" aria-label="Observed spectral lines" value="93.463, 155.772">
-            <input id="plotButton" type="submit" value="Plot" />
+            <input id="plotButton" type="submit" value="Plot"/>
           </fieldset>
-            <small>Input a comma-separated list of the observed spectral line frequencies [GHz], then click "Plot"</small>
-          </label>
-
+          <small>Input a comma-separated list of the observed spectral line frequencies [GHz], then click "Plot"</small>
+        </label>
         <hr/>
-          <details>
-            <summary>Settings</summary>
-
+        <details>
+          <summary>Settings</summary>
+          <label>
+          Frequency match distance
+          <input type="number" id="redshiftMatchDist" value="0.1" step="0.05" min="0" aria-label="Redshift match distance">
+          <small>The cutoff distance at which two redshift values are considered a match.</small>
+          </label>
+          <div class="grid">
             <label>
-              Frequency match distance
-              <input type="number" id="redshiftMatchDist" value="0.1" step="0.05" min="0" aria-label="Redshift match distance">
-              <small>The cutoff distance at which two redshift values are considered a match.</small>
+            Figure width (pixels)
+            <input type="number" id="figSizeX" value="-1" aria-label="Figure width (-1 for auto)">
             </label>
-
-            <div class="grid">
-              <label>
-                Figure width (pixels)
-                <input type="number" id="figSizeX" value="-1" aria-label="Figure width (-1 for auto)">
-              </label>
-              <label>
-                Figure height (pixels)
-                <input type="number" id="figSizeY" value="300" aria-label="Figure height">
-              </label>
-            </div>
-            <small>Figure size parameters (set width = -1 for automatic).</small>
-
-            <div class="grid">
-              <label>
-                Redshift down
-                <input type="number" id="redshift_down" value="0" aria-label="Redshift down">
-              </label>
-              <label>
-                Redshift up
-                <input type="number" id="redshift_up" value="7" aria-label="Redshift up">
-              </label>
-            </div>
-            <small>Lower- and upper-redshift bounds on the figure.</small>
-
             <label>
-              Number of CO lines
-              <input type="number" id="nr_of_CO_lines" value="20" aria-label="Number of CO lines">
-              <small>The number of CO lines you wish to plot.</small>
+            Figure height (pixels)
+            <input type="number" id="figSizeY" value="300" aria-label="Figure height">
             </label>
-
+          </div>
+          <small>Figure size parameters (set width = -1 for automatic).</small>
+          <div class="grid">
             <label>
-              Frequency padding
-              <input type="number" id="frequency_padding" value="20" aria-label="Frequency padding">
-              <small>The frequency difference [GHz] to use as margin for the y-axis above and below max and min observed spectral lines.</small>
+            Redshift down
+            <input type="number" id="redshift_down" value="0" aria-label="Redshift down">
             </label>
-
-          </details>
+            <label>
+            Redshift up
+            <input type="number" id="redshift_up" value="7" aria-label="Redshift up">
+            </label>
+          </div>
+          <small>Lower- and upper-redshift bounds on the figure.</small>
+          <label>
+          Number of CO lines
+          <input type="number" id="nr_of_CO_lines" value="20" aria-label="Number of CO lines">
+          <small>The number of CO lines you wish to plot.</small>
+          </label>
+          <label>
+          Frequency padding
+          <input type="number" id="frequency_padding" value="20" aria-label="Frequency padding">
+          <small>The frequency difference [GHz] to use as margin for the y-axis above and below max and min observed spectral lines.</small>
+          </label>
+        </details>
       </article>
-
       <article id="plotContainer" style="width: 100%;" hidden></article>
-
-      <article id="intersectsTable" style="width: 100%;" hidden>
+      <article id="intersectsTable" hidden>
         <h2>Intersection table</h2>
         <div class="overflow-auto">
           <table class="striped">
@@ -113,17 +95,15 @@
                 <th scope="col">Distance to match [z]</th>
               </tr>
             </thead>
-            <tbody id="intersectsTableBody">
-            </tbody>
+            <tbody id="intersectsTableBody"></tbody>
           </table>
         </div>
       </article>
     </main>
-
     <footer class="container">
       <small>
-        Created by Dr. Joakim Bohlin, Chalmers, Infravis (<a href="https://github.com/akodiat/redshift-search-graphs">source code</a>).<br>
-        <a href="https://github.com/tjlcbakx/redshift-search-graphs">Original code</a> by Dr. Tom Bakx, Chalmers.
+      Created by Dr. Joakim Bohlin, Chalmers, Infravis (<a href="https://github.com/akodiat/redshift-search-graphs">source code</a>).<br>
+      <a href="https://github.com/tjlcbakx/redshift-search-graphs">Original code</a> by Dr. Tom Bakx, Chalmers.
       </small>
     </footer>
     <script type="module" src="main.js"></script>
