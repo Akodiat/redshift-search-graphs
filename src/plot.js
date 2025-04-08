@@ -52,8 +52,8 @@ class PlotView {
         const frequency_up = Math.max(...sl_freq_obs) + frequency_padding;
         const frequency_down = Math.min(...sl_freq_obs) - frequency_padding;
 
+        // Create molecule lines
         const data = [];
-
         const lines = [
             ...range(nr_of_CO_lines).map(i => (
                 {
@@ -83,6 +83,16 @@ class PlotView {
             );
         }
 
+        // List all line types that are actually plotted
+        const relevantMolecules = ["CO", ...new Set(data.filter(v => (
+            v.type !== "CO" &&
+            v.redshift >= redshift_down &&
+            v.redshift <= redshift_up &&
+            v.frequency >= frequency_down &&
+            v.frequency <= frequency_up
+        )).map(v=>v.type))];
+
+
         // Find all intersections
         const intersects = lines.flatMap(l=>
             sl_freq_obs.map(f=>({
@@ -96,15 +106,6 @@ class PlotView {
             v.redshift >= redshift_down &&
             v.redshift <= redshift_up
         ));
-
-        // List all line types that are actually plotted
-        const relevantMolecules = ["CO", ...new Set(data.filter(v => (
-            v.type !== "CO" &&
-            v.redshift >= redshift_down &&
-            v.redshift <= redshift_up &&
-            v.frequency >= frequency_down &&
-            v.frequency <= frequency_up
-        )).map(v=>v.type))];
 
         for (const p1 of intersects) {
             for (const p2 of intersects) {
@@ -210,7 +211,7 @@ class PlotView {
                             {field: "redshift", type: "quantitative", title: "Redshift [z]"},
                             {field: "restFreq", type: "quantitative", title: "Rest frequency [GHz]"},
                             {field: "frequency", type: "quantitative", title: "Frequency [GHz]"},
-                            {field: "closestOtherDist", type: "quantitative", title: "Redshift distance to closest frequency match"},
+                            {field: "closestOtherDist", type: "quantitative", title: "Redshift distance to closest match"},
                         ]
                     }
                 }

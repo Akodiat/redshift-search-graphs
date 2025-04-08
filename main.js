@@ -57,18 +57,20 @@ plotButton.onclick = () => {
                 i--;
             }
         }
-        groups.push(group);
+        // We only care about groups with more
+        // than one element
+        if (group.length > 1) {
+            groups.push(group);
+        }
     }
 
     interSectsTable.hidden = false;
 
     // Fill table
     tableBody.innerHTML = "";
-    for (const group of groups) {
-        if (group.length <= 1) {
-            continue;
-        }
-        for (let i=0; i<group.length; i++) {
+    for (let i=0; i<groups.length; i++) {
+        const group = groups[i];
+        for (let j=0; j<group.length; j++) {
             const row = document.createElement("tr");
             for (const p of [
                 "type",
@@ -78,12 +80,13 @@ plotButton.onclick = () => {
                 "closestOtherDist",
             ]) {
                 const d = document.createElement("td");
-                d.innerText = intersects[group[i]][p];
+                d.innerText = intersects[group[j]][p];
                 row.appendChild(d);
                 tableBody.appendChild(row);
             }
 
-            if (i === group.length - 1) {
+            // Separate groups with border
+            if (j === group.length - 1 && i < groups.length - 1) {
                 row.style = "border-bottom: 2px solid #555";
             }
         }
